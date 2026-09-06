@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.lexiaotong_token*
+*.apk
+dex/
+source/
