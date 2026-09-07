@@ -127,7 +127,17 @@ def api_headers(token=None, body_str=None, params_str=None):
 #  登录
 # ============================================================
 def login(phone, password):
-    """自动登录（含验证码 OCR）"""
+    """自动登录（优先用 CNN 模型，fallback 到 ddddocr）"""
+    # 尝试用 CNN 模型
+    model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "captcha_cnn_best.pth")
+    if os.path.exists(model_path):
+        try:
+            from captcha_recognize import auto_login
+            return auto_login(phone, password, model_path)
+        except Exception as e:
+            print(f"  CNN 模型加载失败: {e}, 回退到 ddddocr")
+
+    # fallback: ddddocr
     import ddddocr
     ocr = ddddocr.DdddOcr(show_ad=False)
 
